@@ -9,6 +9,15 @@ Use this file when starting a change so the relevant public contract is visible
 before code is edited. This index focuses on documentation routing and
 contributor guidance; it does not change runtime behavior or CI gates.
 
+## AgentSpec content activation
+
+An external runtime may atomically change `$HERMES_HOME/.agentspec-content/current`
+and write `active.json` with a new `generation`. `POST /api/session/new` observes
+that marker before creating the session, reloads skill discovery, and clears the
+skills system-prompt cache once per generation. Existing cached session agents
+are never evicted or rebuilt, so their system prompt remains stable. Missing or
+invalid markers and reload failures are fail-open for session creation.
+
 ## Start here
 
 - [`AGENTS.md`](../AGENTS.md): repository entry point for AI assistants,

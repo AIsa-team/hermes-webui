@@ -13413,6 +13413,11 @@ def handle_post(handler, parsed) -> bool:
                 # thread the drain snapshot already missed).
                 if _register_background_commit_thread(t):
                     t.start()
+        # AgentSpec-managed SOUL/skills switch atomically while the sandbox is
+        # idle. Refresh discovery and prompt caches for this new session only;
+        # existing SESSION_AGENT_CACHE entries keep their original system prompt.
+        from api.agent_content import activate_current_content_for_new_session
+        activate_current_content_for_new_session()
         s = new_session(
             workspace=workspace,
             model=model,
